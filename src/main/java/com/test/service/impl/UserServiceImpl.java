@@ -14,18 +14,18 @@ public class UserServiceImpl implements UserService {
     SqlSession sqlSession;
 
     public void insert(Object params){
-        sqlSession.selectList("test.user.insert", params);
+        sqlSession.selectList("user.insert", params);
     }
 
     public  void delete(Object params){
-        sqlSession.selectList("test.user.delete", params);
+        sqlSession.selectList("user.delete", params);
     }
 
     public List<Map<String, Object>> select(Object params){
-        return sqlSession.selectList("test.user.select", params);
+        return sqlSession.selectList("user.select", params);
     }
 
     public void update(Object params){
-        sqlSession.selectList("test.user.update", params);
+        sqlSession.selectList("user.update", params);
     }
 }

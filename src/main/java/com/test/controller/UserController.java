@@ -5,8 +5,10 @@ import com.test.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -20,12 +22,14 @@ public class UserController {
         Map<String, Object> res = new HashMap<>();
         res.put("status", 0);
         try{
-            if(userService.select(request).isEmpty()){
+            request.put("create_time", new Date());
+            if(userService.selectAll(request).isEmpty()){
                 userService.insert(request);
                 res.put("status", 1);
             }
             res.put("msg", "处理成功");
             res.put("data", userService.select(request));
+            System.out.println("添加成功  ------------------  " + userService.selectAll(request));
             return res;
         }
         catch (Exception e){
@@ -37,10 +41,11 @@ public class UserController {
     public Object delete(@RequestBody Map<String, Object> request){
         Map<String, Object> res = new HashMap<>();
         try{
-            userService.delete(request);
             res.put("msg", "处理成功");
             res.put("status", 1);
             res.put("data", userService.select(request));
+            userService.delete(request);
+            System.out.println("删除成功  ------------------  " + userService.selectAll(request));
             return res;
         }
         catch (Exception e){
@@ -55,10 +60,51 @@ public class UserController {
             res.put("msg", "处理成功");
             res.put("status", 1);
             res.put("data", userService.select(request));
+            res.put("key", UUID.randomUUID().toString().replaceAll("-", ""));
+            userService.insertKey(res);
+            System.out.println("查询成功  ------------------  " + userService.selectAll(request));
             return res;
         }
         catch (Exception e){
             throw new NumberFormatException("\n************ select 出错原因 ************\n" + e + "\n**********************************\n");
+        }
+    }
+
+    @RequestMapping(value = "/forget/password", method = RequestMethod.POST)
+    public Object forgetPassword(@RequestBody Map<String, Object> request){
+        Map<String, Object> res = new HashMap<>();
+        res.put("msg", "处理成功");
+        res.put("status", 0);
+        try{
+            if(!userService.forgetPassword(request).isEmpty()){
+                res.put("status", 1);
+            }
+            res.put("data", userService.forgetPassword(request));
+            System.out.println("查询成功  ------------------  " + userService.selectAll(request));
+            return res;
+        }
+        catch (Exception e){
+            throw new NumberFormatException("\n************ select 出错原因 ************\n" + e + "\n**********************************\n");
+        }
+
+    }
+
+    @RequestMapping(value = "/reset/password", method = RequestMethod.POST)
+    public Object resetPassword(@RequestBody Map<String, Object> request){
+        System.out.println(request);
+        Map<String, Object> res = new HashMap<>();
+        res.put("msg", "处理成功");
+        res.put("status", 0);
+        try{
+            if(!userService.selectId(request).get(0).get("password").equals(request.get("password"))){
+                res.put("status", 1);
+                userService.resetPassword(request);
+            }
+            System.out.println("修改成功  ------------------  " + userService.selectId(request));
+            return res;
+        }
+        catch (Exception e){
+            throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");
         }
     }
 
@@ -70,7 +116,41 @@ public class UserController {
             res.put("msg", "处理成功");
             res.put("status", 1);
             res.put("data", userService.select(request));
+            System.out.println("修改成功  ------------------  " + userService.selectAll(request));
             return res;
+        }
+        catch (Exception e){
+            throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");
+        }
+    }
+
+    @RequestMapping(value = "/select/key", method = RequestMethod.POST)
+    public Object selectKey(@RequestBody Map<String, Object> request){
+        Map<String, Object> res = new HashMap<>();
+        try{
+            if(request.get("key") == ""){
+                request.put("key", 111);
+            }
+            System.out.println(request);
+            userService.selectKey(request);
+            res.put("msg", "处理成功");
+            res.put("status", 1);
+            res.put("key", userService.selectKey(request));
+            return res;
+        }
+        catch (Exception e){
+            throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");
+        }
+    }
+
+    @RequestMapping(value = "/delete/key", method = RequestMethod.POST)
+    public void deleteKey(@RequestBody Map<String, Object> request){
+        try{
+            System.out.println(request);
+            if(request.get("key") == ""){
+                return;
+            }
+            userService.deleteKey(request);
         }
         catch (Exception e){
             throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");

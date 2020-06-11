@@ -17,12 +17,40 @@ public class UserServiceImpl implements UserService {
         sqlSession.selectList("user.insert", params);
     }
 
+    public void insertKey(Object params){
+        sqlSession.selectList("user.insertKey", params);
+    }
+
+    public  void deleteKey(Object params){
+        sqlSession.selectList("user.deleteKey", params);
+    }
+
     public  void delete(Object params){
         sqlSession.selectList("user.delete", params);
     }
 
     public List<Map<String, Object>> select(Object params){
         return sqlSession.selectList("user.select", params);
+    }
+
+    public List<Map<String, Object>> selectKey(Object params){
+        return sqlSession.selectList("user.selectKey", params);
+    }
+
+    public List<Map<String, Object>> selectAll(Object params){
+        return sqlSession.selectList("user.selectAll", params);
+    }
+
+    public List<Map<String, Object>> selectId(Object params){
+        return sqlSession.selectList("user.selectId", params);
+    }
+
+    public List<Map<String, Object>> forgetPassword(Object params){
+        return sqlSession.selectList("user.forgetPassword", params);
+    }
+
+    public void resetPassword(Object params){
+        sqlSession.selectList("user.resetPassword", params);
     }
 
     public void update(Object params){

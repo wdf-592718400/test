@@ -6,27 +6,57 @@
 
     <!--增-->
     <insert id="insert" parameterType="map">
-        insert into users(name, phone, password)
-        value #{name}, #{phone}, #{password}
+        insert into users(name, phone, password, create_time, status)
+        value (#{name}, #{phone}, #{password}, #{create_time}, 1)
+    </insert>
+    <insert id="insertKey" parameterType="map">
+        insert into `key`(`key`)
+        value (#{key})
     </insert>
 
     <!--删-->
-    <delete id="delete" parameterType="map">
-        delete from users
-        where phone=#{phone}
+    <delete id="deleteKey" parameterType="map">
+        delete from `key`
+        where `key`=#{key}
     </delete>
+    <update id="delete" parameterType="map">
+        update users
+        set status=0
+        where id=#{id}
+    </update>
 
     <!--查-->
     <select id="select" parameterType="map" resultType="map">
-        select name, phone, password from users
-        where phone=#{phone}
+        select `name`, phone, id from users
+        where phone=#{phone} and password=#{password} and status=1
+    </select>
+    <select id="selectKey" parameterType="map" resultType="map">
+        select * from `key`
+        where `key`=#{key}
+    </select>
+    <select id="forgetPassword" parameterType="map" resultType="map">
+        select id from users
+        where phone=#{phone} and name=${name} and status=1
+    </select>
+    <select id="selectAll" parameterType="map" resultType="map">
+        select * from users
+        where phone=#{phone} and status=1
+    </select>
+    <select id="selectId" parameterType="map" resultType="map">
+        select * from users
+        where id=#{id} and status=1
     </select>
 
     <!--改-->
     <update id="update" parameterType="map">
         update users
         set name=#{name}, phone=#{phone}
-        where id=#{id}
+        where id=#{id} and status=1
+    </update>
+    <update id="resetPassword" parameterType="map">
+        update users
+        set password=${password}
+        where id=#{id} and status=1
     </update>
 
 

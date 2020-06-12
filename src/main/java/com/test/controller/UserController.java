@@ -115,7 +115,7 @@ public class UserController {
             userService.update(request);
             res.put("msg", "处理成功");
             res.put("status", 1);
-            res.put("data", userService.select(request));
+            res.put("data", userService.selectId(request));
             System.out.println("修改成功  ------------------  " + userService.selectAll(request));
             return res;
         }
@@ -131,7 +131,6 @@ public class UserController {
             if(request.get("key") == ""){
                 request.put("key", 111);
             }
-            System.out.println(request);
             userService.selectKey(request);
             res.put("msg", "处理成功");
             res.put("status", 1);
@@ -145,12 +144,26 @@ public class UserController {
 
     @RequestMapping(value = "/delete/key", method = RequestMethod.POST)
     public void deleteKey(@RequestBody Map<String, Object> request){
+        System.out.println("Key:" + request.get("key") + "\t已删除");
         try{
-            System.out.println(request);
             if(request.get("key") == ""){
                 return;
             }
             userService.deleteKey(request);
+        }
+        catch (Exception e){
+            throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");
+        }
+    }
+
+    @RequestMapping(value = "/select/own/information", method = RequestMethod.POST)
+    public Object ownInformation(@RequestBody Map<String, Object> request){
+        Map<String, Object> res = new HashMap<>();
+        try{
+            res.put("msg", "处理成功");
+            res.put("status", 1);
+            res.put("data", userService.selectId(request));
+            return res;
         }
         catch (Exception e){
             throw new NumberFormatException("\n************ update 出错原因 ************\n" + e + "\n**********************************\n");
